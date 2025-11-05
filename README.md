@@ -2,6 +2,12 @@
 
 Web app Flask pour générer des codes TOTP depuis un **QR code** (screenshot) ou une **URI otpauth://**. Secrets chiffrés (Fernet). Login simple via variables d'environnement.
 
+## Captures d'écran
+
+![Dashboard](spec/image.png)
+
+![Import de codes](spec/image1.png)
+
 ## Prérequis
 - Python 3.12+
 - libzbar (pour lire les QR)
