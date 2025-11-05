@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<div style="max-width:700px;margin:0 auto">
+  <div style="text-align:center;margin-bottom:32px">
+    <div style="font-size:56px;margin-bottom:16px">✨</div>
+    <h1 class="page-title" style="margin:0">Importer un code OTP</h1>
+    <p class="muted">Ajoute un nouveau code TOTP depuis une URI ou un QR code</p>
+  </div>
+
+  <div class="card">
+    <form method="post" enctype="multipart/form-data" class="grid">
+      <div>
+        <label>🔗 URI otpauth://</label>
+        <input name="otpauth_uri" placeholder="otpauth://totp/GitHub:user@example.com?secret=JBSWY3DPEHPK3PXP&issuer=GitHub">
+        <p class="muted" style="font-size:12px;margin-top:8px">
+          Colle l'URI complète que tu as copiée depuis ton application d'authentification
+        </p>
+      </div>
+      
+      <div style="text-align:center;padding:12px 0;color:#64748b;font-weight:600">
+        — OU —
+      </div>
+      
+      <div>
+        <label>📷 Screenshot du QR code</label>
+        <input type="file" name="qr_image" accept="image/*" style="padding:16px">
+        <p class="muted" style="font-size:12px;margin-top:8px">
+          Capture d'écran du QR code affiché par le service (PNG, JPG, etc.)
+        </p>
+      </div>
+      
+      <div style="margin-top:16px">
+        <button class="btn" type="submit" style="width:100%;padding:14px;font-size:16px">
+          ⬆️ Importer le code
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card" style="margin-top:24px">
+    <h3 style="margin:0 0 16px 0;font-size:18px;color:#cbd5e1">💡 Comment obtenir l'URI ou le QR ?</h3>
+    <div class="grid" style="gap:12px">
+      <div style="padding:16px;background:rgba(59,130,246,.1);border-radius:12px;border-left:3px solid #3b82f6">
+        <strong style="color:#60a5fa">1. Via QR Code</strong>
+        <p class="muted" style="margin:8px 0 0 0;font-size:13px">
+          Lors de la configuration 2FA, fais une capture d'écran du QR code affiché
+        </p>
+      </div>
+      <div style="padding:16px;background:rgba(139,92,246,.1);border-radius:12px;border-left:3px solid #8b5cf6">
+        <strong style="color:#a78bfa">2. Via URI</strong>
+        <p class="muted" style="margin:8px 0 0 0;font-size:13px">
+          Certaines apps affichent l'URI otpauth:// directement - copie-la ici
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width:460px;margin:60px auto;">
+  <div style="text-align:center;margin-bottom:32px">
+    <div style="font-size:56px;margin-bottom:16px">🔐</div>
+    <h2 class="page-title" style="margin:0">Connexion</h2>
+    <p class="muted">Accède à tes codes OTP sécurisés</p>
+  </div>
+  
+  <form method="post" class="grid">
+    <div>
+      <label>👤 Utilisateur</label>
+      <input name="username" autocomplete="username" required placeholder="admin">
+    </div>
+    <div>
+      <label>🔑 Mot de passe</label>
+      <input type="password" name="password" autocomplete="current-password" required placeholder="••••••••">
+    </div>
+    <div style="margin-top:8px">
+      <button class="btn" type="submit" style="width:100%;padding:14px">🚀 Se connecter</button>
+    </div>
+  </form>
+  
+  <div style="margin-top:24px;padding-top:24px;border-top:1px solid rgba(100,116,139,.2)">
+    <p class="muted" style="font-size:13px;text-align:center;margin:0">
+      💡 Identifiants configurés dans les variables d'environnement
+    </p>
+  </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row" style="margin-bottom:32px">
+  <h1 class="page-title">Mes codes OTP</h1>
+  <a class="btn secondary right" href="/import">✨ Ajouter un code</a>
+</div>
+
+{% if not tokens_data %}
+  <div class="card empty-state">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+    </svg>
+    <h3>Aucun code OTP</h3>
+    <p>Commence par <a href="/import">importer un code</a> depuis un QR ou une URI.</p>
+  </div>
+{% endif %}
+
+<div class="grid cols-2">
+  {% for data in tokens_data %}
+    {% set t = data.token %}
+    <div class="card" id="card-{{ t.id }}">
+      <div class="row" style="align-items:flex-start">
+        <div style="flex:1">
+          <div class="issuer">{{ t.issuer or "🔒 Sans émetteur" }}</div>
+          <div class="pill">{{ t.account_name or t.label }}</div>
+          <div class="algo-info">{{ t.algorithm.value }} · {{ t.digits }} digits · {{ t.period }}s</div>
+        </div>
+        <button class="btn-delete" onclick="deleteToken({{ t.id }})" title="Supprimer ce code OTP">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="code-display">
+        <div class="code" id="code-{{ t.id }}" style="color:#60a5fa !important">
+          {{ data.code }}
+        </div>
+        <div class="timer-circle" id="timer-{{ t.id }}">
+          <svg width="80" height="80" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="36" stroke="rgba(100,116,139,0.3)" stroke-width="6" fill="none"/>
+            {% set circumference = 2 * 3.14159265359 * 36 %}
+            {% set percentage = data.remaining / t.period %}
+            {% set initial_offset = circumference * (1 - percentage) %}
+            <circle id="progress-{{ t.id }}" cx="40" cy="40" r="36" stroke="url(#gradient-{{ t.id }})" stroke-width="6" fill="none" stroke-dasharray="{{ circumference }}" stroke-dashoffset="{{ initial_offset }}" stroke-linecap="round"/>
+            <defs>
+              <linearGradient id="gradient-{{ t.id }}" x1="0%" y1="0%" x2="100%" y2="100%">
+                {% if data.remaining <= 5 %}
+                <stop offset="0%" style="stop-color:#ef4444;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#dc2626;stop-opacity:1" />
+                {% elif data.remaining <= 10 %}
+                <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#d97706;stop-opacity:1" />
+                {% else %}
+                <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+                <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+                {% endif %}
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="timer-text {% if data.remaining <= 5 %}urgent{% elif data.remaining <= 10 %}warning{% else %}normal{% endif %}" id="rem-{{ t.id }}">{{ data.remaining }}</div>
+        </div>
+        <button class="btn copy right" onclick="copyCode({{ t.id }})">📋 Copier</button>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<script>
+  console.log('🚀 Dashboard chargé avec codes initiaux !');
+  
+  const TOKENS = [{% for data in tokens_data %}{{ data.token.id }}{% if not loop.last %},{% endif %}{% endfor %}];
+  const PERIODS = { {% for data in tokens_data %}{{ data.token.id }}:{{ data.token.period }}{% if not loop.last %},{% endif %}{% endfor %} };
+  
+  console.log('📋 TOKENS:', TOKENS);
+  console.log('⏱ PERIODS:', PERIODS);
+  
+  // Attendre que app.js soit chargé avant de démarrer
+  function waitForStartLive() {
+    if (typeof startLive === 'function') {
+      console.log('▶️ Démarrage de la mise à jour en temps réel...');
+      startLive(TOKENS, PERIODS);
+    } else {
+      console.log('⏳ En attente du chargement de app.js...');
+      setTimeout(waitForStartLive, 50);
+    }
+  }
+  
+  // Démarrer dès que le DOM est prêt
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', waitForStartLive);
+  } else {
+    // DOM déjà chargé, attendre un peu pour app.js
+    setTimeout(waitForStartLive, 100);
+  }
+</script>
+{% endblock %}
+
